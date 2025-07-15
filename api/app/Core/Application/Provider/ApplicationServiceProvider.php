@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Providers;
+namespace App\Core\Application\Provider;
 
 use Illuminate\Support\ServiceProvider;
 
-class AppServiceProvider extends ServiceProvider
+class ApplicationServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
