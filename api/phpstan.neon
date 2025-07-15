@@ -1,0 +1,23 @@
+includes:
+    - ./vendor/phpstan/phpstan-webmozart-assert/extension.neon
+    - ./vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 8
+    checkMissingCallableSignature: true
+    reportUnmatchedIgnoredErrors: false
+    treatPhpDocTypesAsCertain: false
+    checkOctaneCompatibility: true
+    noEnvCallsOutsideOfConfig: false
+    phpVersion: 80470
+
+    paths:
+        - ./app/Core
+        - ./app/Container
+        - ./config
+        - ./routes
+        - ./database
+        - ./resources/lang
+    excludePaths:
+        - ./database/seeders
+        - ./database/migrations

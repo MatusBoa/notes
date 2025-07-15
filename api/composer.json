@@ -9,18 +9,25 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "^8.4",
         "laravel/framework": "^12.0",
-        "laravel/tinker": "^2.10.1"
+        "laravel/tinker": "^2.10.1",
+        "webmozart/assert": "^1.11"
     },
     "require-dev": {
+        "driftingly/rector-laravel": "*",
         "fakerphp/faker": "^1.23",
+        "friendsofphp/php-cs-fixer": "*",
+        "larastan/larastan": "*",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^11.5.3"
+        "phpstan/phpstan-webmozart-assert": "^2.0",
+        "phpunit/phpunit": "^11.5.3",
+        "rector/rector": "*",
+        "squizlabs/php_codesniffer": "*"
     },
     "autoload": {
         "psr-4": {
@@ -50,13 +57,13 @@
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan migrate --graceful --ansi"
         ],
-        "dev": [
-            "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+        "code:analyse": [
+            "./vendor/bin/phpcs --no-cache",
+            "./vendor/bin/phpstan analyse --memory-limit=-1"
         ],
-        "test": [
-            "@php artisan config:clear --ansi",
-            "@php artisan test"
+        "code:fix": [
+            "./vendor/bin/rector process --clear-cache",
+            "./vendor/bin/php-cs-fixer fix --using-cache no"
         ]
     },
     "extra": {
@@ -71,6 +78,9 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
+        },
+        "platform": {
+            "php": "8.4"
         }
     },
     "minimum-stability": "stable",
