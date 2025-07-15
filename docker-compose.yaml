@@ -1,0 +1,61 @@
+networks:
+  database:
+  fastcgi:
+
+services:
+  mariadb:
+    image: bitnami/mariadb:11.4
+    volumes:
+      - ./.data/mariadb:/bitnami/mariadb
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_PASSWORD:-secret}
+      - MARIADB_USER=${DB_USER:-app}
+      - MARIADB_PASSWORD=${DB_PASSWORD:-secret}
+      - MARIADB_DATABASE=${DB_NAME:-app}
+    healthcheck:
+      test: ['CMD', '/opt/bitnami/scripts/mariadb/healthcheck.sh']
+      start_period: 2s
+      interval: 2s
+      timeout: 5s
+      retries: 3
+    networks:
+      - database
+
+  nginx:
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./api:/opt/api
+      - "./.docker/nginx/conf.d:/etc/nginx/conf.d"
+      - "./.docker/nginx/snippets/fastcgi-php.conf:/etc/nginx/snippets/fastcgi-php.conf"
+      - "./.docker/nginx/fastcgi.conf:/etc/nginx/fastcgi.conf"
+#    depends_on:
+#      - fpm
+    networks:
+      - fastcgi
+
+#  fpm:
+#    build:
+#      context: api
+#      target: fpm
+#    volumes:
+#      - ./api:/opt/api
+#    depends_on:
+#      mariadb:
+#        condition: service_healthy
+#    networks:
+#      - database
+#      - fastcgi
+#
+#  workspace:
+#    build:
+#      context: api
+#      target: workspace
+#    volumes:
+#      - ./api:/opt/api
+#    depends_on:
+#      mariadb:
+#        condition: service_healthy
+#    networks:
+#      - database
